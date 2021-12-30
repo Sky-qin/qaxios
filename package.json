@@ -1,11 +1,11 @@
 {
   "name": "qaxios",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel index.js --presets babel-preset-es2015 --out-dir .",
+    "build": "babel index.js --presets babel-preset-es2015 --out-dir dist",
     "prepublish": "npm run build"
   },
   "author": "sky-qin",

@@ -1,66 +1,50 @@
-"use strict";
+import axios from "axios";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _axios = require("axios");
-
-var _axios2 = _interopRequireDefault(_axios);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-exports.default = function request(options) {
+export default async function request(options) {
   options = FormatOptions(options);
-  var service = _axios2.default.create({
+  const service = axios.create({
     // baseURL: 'https://api.example.com'
   });
   // request拦截器
-  service.interceptors.request.use(function (config) {
-    // 在发送请求之前做些什么
-    var userInfo = JSON.parse(window.localStorage.getItem("user")) || {};
-    config.headers.token = userInfo && userInfo.token || "";
-    return config;
-  }, function (error) {
-    // 对请求错误做些什么
-    Promise.reject(error);
-  });
+  service.interceptors.request.use(
+    (config) => {
+      // 在发送请求之前做些什么
+      const userInfo = JSON.parse(window.localStorage.getItem("user")) || {};
+      config.headers.token = (userInfo && userInfo.token) || "";
+      return config;
+    },
+    (error) => {
+      // 对请求错误做些什么
+      Promise.reject(error);
+    }
+  );
   // 添加响应拦截器
-  service.interceptors.response.use(function (response) {
-    return (
+  service.interceptors.response.use(
+    (response) =>
       // 对响应数据做点什么
-      response
-    );
-  }, function (error) {
-    // 对响应错误做点什么
-    return error.response;
-  });
-  var response = void 0;
+      response,
+    (error) => {
+      // 对响应错误做点什么
+      return error.response;
+    }
+  );
+  let response;
   try {
-    response = service(options).then(function (res) {
-      return res;
-    });
+    response = await service(options);
     return response;
   } catch (err) {
     return response;
   }
-};
+}
 
 // 格式化参数
-
-var FormatOptions = function FormatOptions(options) {
-  var _options$method = options.method,
-      method = _options$method === undefined ? "get" : _options$method,
-      url = options.url,
-      _options$params = options.params,
-      params = _options$params === undefined ? {} : _options$params;
-
+const FormatOptions = (options) => {
+  const { method = "get", url, params = {} } = options;
+  // let
   if (method.toLowerCase() === "get") {
-    return { method: "get", url: url, params: params };
+    return { method: "get", url, params };
   }
   if (method.toLowerCase() === "post") {
-    return { method: "post", url: url, data: params };
+    return { method: "post", url, data: params };
   }
 };
